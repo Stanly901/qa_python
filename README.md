@@ -19,3 +19,9 @@
 - `test_add_book_in_favorites` - проверяет добавление книги в избранное
 - `test_delete_book_from_favorites` - проверяет удаление книги из избранного
 - `test_get_list_of_favorites_books` - проверяет получение списка избранных книг
+
+### Update 07.05.2025
+- `test_get_book_genre` - для метода добавлен позитивный тест
+- `test_get_books_with_specific_genre`- улучшен тест на вывод книг по специфическому жанру
+- `test_get_book_genre` - для метода добавлен позитивный тест
+- `test_get_books_for_children` - для метода добавлен позитивный тест
