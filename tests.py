@@ -1,5 +1,6 @@
 from main import BooksCollector
 
+
 class TestBooksCollector:
 
     # Тест 1: Добавление одной книги
@@ -16,7 +17,23 @@ class TestBooksCollector:
         collector.set_book_genre(book_name, 'Фантастика')
         assert collector.get_book_genre(book_name) == 'Фантастика'
 
-    # Тест 3: Получение жанра существующей книги без жанра (пустая строка)
+    # Тест 3.1: Получение жанра существующей книги с жанром
+    def test_get_book_genre_returns_correct_genre_for_existing_book(self):
+        collector = BooksCollector()
+        book_name = "Властелин колец"
+        book_genre = "Фэнтези"
+
+        collector.add_new_book(book_name)
+        collector.set_book_genre(book_name, "Фантастика")
+
+        result = collector.get_book_genre(book_name)
+
+        assert result == "Фантастика", (
+            f"Ожидался жанр 'Фантастика' для книги '{book_name}', "
+            f"но получено '{result}'"
+        )
+
+    # Тест 3.2: Получение жанра существующей книги без жанра
     def test_get_book_genre_for_book_without_genre(self):
         collector = BooksCollector()
         book_name = 'Анна Каренина'
@@ -24,21 +41,82 @@ class TestBooksCollector:
         assert collector.get_book_genre(book_name) == ''
 
     # Тест 4: Получение списка книг по жанру
-    def test_get_books_with_specific_genre(self):
+    def test_get_books_with_specific_genre_returns_correct_books(self):
         collector = BooksCollector()
-        books = ['Книга 1', 'Книга 2']
-        genre = 'Ужасы'
-        for book in books:
+        test_books = [
+            ("Война и мир", "Роман"),
+            ("1984", "Фантастика"),
+            ("Оно", "Ужасы"),
+            ("Метро 2033", "Фантастика"),
+            ("Шерлок Холмс", "Детективы")
+        ]
+        for book, genre in test_books:
             collector.add_new_book(book)
-            collector.set_book_genre(book, genre)
-        assert collector.get_books_with_specific_genre(genre) == books
+            if genre in collector.genre:
+                collector.set_book_genre(book, genre)
 
-    # Тест 5: Получение пустого словаря, когда нет книг
+        genre_to_find = "Фантастика"
+        result = collector.get_books_with_specific_genre(genre_to_find)
+        expected_books = ["1984", "Метро 2033"]
+        assert sorted(result) == sorted(expected_books), (
+            f"Ожидались книги {expected_books} с жанром '{genre_to_find}', "
+            f"но получено {result}"
+        )
+
+    # Тест 5.1: Получение корректного словаря
+    def test_get_books_genre_returns_correct_dictionary(self):
+        collector = BooksCollector()
+        books_to_add = [
+            ("Война и мир", "Роман"),
+            ("1984", "Фантастика"),
+            ("Неизвестная книга", ""),
+            ("Оно", "Ужасы")
+        ]
+        for book, genre in books_to_add:
+            collector.add_new_book(book)
+            if genre in collector.genre:
+                collector.set_book_genre(book, genre)
+
+        result = collector.get_books_genre()
+        expected_dict = {
+            "Война и мир": "",
+            "1984": "Фантастика",
+            "Неизвестная книга": "",
+            "Оно": "Ужасы"
+        }
+
+        assert result == expected_dict, (
+            f"Ожидался словарь {expected_dict}, но получено {result}"
+        )
+
+    # Тест 5.2: Получение пустого словаря
     def test_get_books_genre_empty(self):
         collector = BooksCollector()
         assert collector.get_books_genre() == {}
 
-    # Тест 6: Книги без жанра не должны попадать в детские
+    # Тест 6.1: Получение книг для детей
+    def test_get_books_for_children_returns_only_child_friendly_books(self):
+        collector = BooksCollector()
+        test_books = [
+            ("Карлсон", "Мультфильмы"),
+            ("Гарри Поттер", "Фантастика"),
+            ("Оно", "Ужасы"),
+            ("Книга без жанра", ""),
+            ("Комедийная книга", "Комедии")
+        ]
+        for book, genre in test_books:
+            collector.add_new_book(book)
+            if genre:
+                collector.set_book_genre(book, genre)
+
+        result = collector.get_books_for_children()
+        expected_child_books = ["Карлсон", "Гарри Поттер", "Комедийная книга"]
+
+        assert sorted(result) == sorted(expected_child_books), (
+            f"Ожидались детские книги {expected_child_books}, но получено {result}"
+        )
+
+    # Тест 6.2: Книги без жанра не попадают в детские
     def test_books_without_genre_not_for_children(self):
         collector = BooksCollector()
         collector.add_new_book("Книга без жанра")
