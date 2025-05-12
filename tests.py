@@ -14,31 +14,23 @@ class TestBooksCollector:
         collector = BooksCollector()
         book_name = 'Дюна'
         collector.add_new_book(book_name)
+        assert collector.books_genre[book_name] == ''
         collector.set_book_genre(book_name, 'Фантастика')
-        assert collector.get_book_genre(book_name) == 'Фантастика'
+        assert collector.books_genre[book_name] == 'Фантастика', (
+            f"Жанр книги '{book_name}' должен быть 'Фантастика', "
+            f"но в словаре записано '{collector.books_genre[book_name]}'"
+        )
 
-    # Тест 3.1: Получение жанра существующей книги с жанром
+    # Тест 3: Получение жанра существующей книги с жанром
     def test_get_book_genre_returns_correct_genre_for_existing_book(self):
         collector = BooksCollector()
         book_name = "Властелин колец"
-        book_genre = "Фэнтези"
-
-        collector.add_new_book(book_name)
-        collector.set_book_genre(book_name, "Фантастика")
-
+        collector.books_genre[book_name] = "Фантастика"
         result = collector.get_book_genre(book_name)
-
         assert result == "Фантастика", (
-            f"Ожидался жанр 'Фантастика' для книги '{book_name}', "
-            f"но получено '{result}'"
+            f"Метод get_book_genre должен вернуть 'Фантастика' для книги '{book_name}', "
+            f"но вернул '{result}'"
         )
-
-    # Тест 3.2: Получение жанра существующей книги без жанра
-    def test_get_book_genre_for_book_without_genre(self):
-        collector = BooksCollector()
-        book_name = 'Анна Каренина'
-        collector.add_new_book(book_name)
-        assert collector.get_book_genre(book_name) == ''
 
     # Тест 4: Получение списка книг по жанру
     def test_get_books_with_specific_genre_returns_correct_books(self):
